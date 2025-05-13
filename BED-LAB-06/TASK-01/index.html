@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:active {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+<form id="registrationForm">
+    <h2>User Registration</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name" required autocomplete="off"><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" required autocomplete="off"><br>
+
+    <label for="password">Password (8+ characters):</label>
+    <input type="password" id="password" required autocomplete="off" minlength="8"><br>
+
+    <button type="button" onclick="registerUser()">Register</button>
+    <button type="button" onclick="navigateToUserList()">User List</button>
+</form>
+
+<script>
+    function registerUser() {
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (name && isValidEmail(email) && isValidPassword(password)) {
+            fetch('backend_script.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, password }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('User created successfully!');
+                    } else {
+                        alert('Registration error: ' + data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            alert('Please fill in all fields correctly.');
+        }
+    }
+
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    function isValidPassword(password) {
+        return password.length >= 8;
+    }
+
+    function navigateToUserList() {
+        window.location.href = 'users.html';
+    }
+</script>
+</body>
+</html>
